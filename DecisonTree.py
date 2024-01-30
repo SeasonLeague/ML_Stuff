@@ -34,7 +34,7 @@ class DecisionTree():
             leaf_value = self._most_common_label(y)
             return Node(value=leaf_value)
 
-        feat_idx = np.random.choice(n_feats, self.n_features, replace=False)
+        feat_idxs = np.random.choice(n_feats, self.n_features, replace=False)
         # Find the best split 
         best_feature, best_thresh = self._best_split(X, y, feat_idxs)
 
@@ -42,7 +42,10 @@ class DecisionTree():
 
 
         # Create child nodes 
-    
+        left_idxs, right_idxs = self._split(X[:, best_feature], best_thresh)
+        left = self._grow_tree(X[left_idxs, :], y[left_idxs], depth+1)
+        right = self._grow_tree(X[right_idxs, :], y[right_idxs], depth+1)
+        return Node(best_feature, best_thresh, left, right)
 
     def _best_split(self, X, y, feat_idxs):
         best_gain = -1
@@ -54,7 +57,7 @@ class DecisionTree():
 
             for thr in thresholds:
                 # calculate the information gain 
-                gain = self._information_gain()
+                gain = self._information_gain(y, X_column, thr)
 
                 if gain > best_gain:
                     best_gain = gain 
@@ -98,4 +101,11 @@ class DecisionTree():
         value = counter.most_common(1)[0][0]
         return value
 
-    def predict():
+    def predict(self, X):
+        return np.array([self._traverse_tree(x, self.root) for x in X])
+
+    def _traverse_tree(self, x, node):
+        if node.is_leaf_node();
+            return node.value()
+        
+        if 
